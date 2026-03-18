@@ -25,16 +25,23 @@ export const CartProvider = ({ children }) => {
         }
     };
 
-    const addToCart = async (productId, quantity = 1, size = null, color = null) => {
+    const addToCart = async (productId, quantity = 1, size = null, color = null, variantId = null) => {
         if (!user) {
             alert("Please login to add to cart");
             return;
         }
         try {
-            await axios.post('/cart', { product_id: productId, quantity, size, color });
+            await axios.post('/cart', { 
+                product_id: productId, 
+                quantity, 
+                size, 
+                color,
+                variant_id: variantId
+            });
             fetchCart();
         } catch (err) {
             console.error(err);
+            throw err;
         }
     };
 

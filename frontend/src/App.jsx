@@ -10,6 +10,7 @@ import Reports from './pages/Reports';
 import UserProfile from './pages/UserProfile';
 import AdminPaymentMethod from './pages/AdminPaymentMethod';
 import AdminGeneralSettings from './pages/AdminGeneralSettings';
+import AdminReviews from './pages/AdminReviews';
 import SettingsGeneral from './pages/SettingsGeneral';
 import ProductDetail from './pages/ProductDetail';
 import About from './pages/About';
@@ -39,6 +40,7 @@ function App() {
                 <Route path="/orders" element={<OrderHistory />} />
                 <Route path="/admin" element={<AdminDashboard />} />
                 <Route path="/admin/reports" element={<Reports />} />
+                <Route path="/admin/reviews" element={<AdminReviews />} />
                 <Route path="/admin/settings" element={<AdminGeneralSettings />} />
                 <Route path="/admin/payment-method" element={<AdminPaymentMethod />} />
                 <Route path="/profile" element={<UserProfile />} />

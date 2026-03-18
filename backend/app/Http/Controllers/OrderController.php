@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\ProductVariant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
@@ -14,7 +15,7 @@ class OrderController extends Controller
 {
     public function index(Request $request)
     {
-        return response()->json($request->user()->orders()->with('items.product')->orderBy('created_at', 'desc')->get());
+        return response()->json($request->user()->orders()->with(['items.product', 'items.variant'])->orderBy('created_at', 'desc')->get());
     }
 
     public function store(Request $request)
@@ -30,15 +31,27 @@ class OrderController extends Controller
             'selected_item_ids.*' => 'integer|exists:cart_items,id,user_id,'.$user->id
         ]);
 
-        $cartItems = $user->cartItems()->whereIn('id', $request->selected_item_ids)->with('product')->get();
+        $cartItems = $user->cartItems()->whereIn('id', $request->selected_item_ids)->with(['product', 'variant'])->get();
 
         if ($cartItems->isEmpty()) {
             return response()->json(['message' => 'Cart is empty or items not found'], 400);
         }
 
-        $totalAmount = $cartItems->sum(function($item) {
-            return $item->quantity * $item->product->price;
-        });
+        // Calculate total and validate stock
+        $totalAmount = 0;
+        foreach ($cartItems as $item) {
+            $price = $item->variant ? $item->variant->effective_price : $item->product->price;
+            $totalAmount += $item->quantity * $price;
+
+            // Check stock for variants
+            if ($item->variant_id && $item->variant) {
+                if ($item->variant->stock_quantity < $item->quantity) {
+                    return response()->json([
+                        'message' => "Insufficient stock for {$item->product->name} ({$item->variant->size}/{$item->variant->color})"
+                    ], 400);
+                }
+            }
+        }
 
         DB::beginTransaction();
         try {
@@ -53,14 +66,22 @@ class OrderController extends Controller
             ]);
 
             foreach ($cartItems as $item) {
+                $price = $item->variant ? $item->variant->effective_price : $item->product->price;
+
                 OrderItem::create([
                     'order_id' => $order->id,
                     'product_id' => $item->product_id,
+                    'variant_id' => $item->variant_id,
                     'quantity' => $item->quantity,
-                    'price' => $item->product->price,
-                    'size' => $item->size,
-                    'color' => $item->color
+                    'price' => $price,
+                    'size' => $item->display_size,
+                    'color' => $item->display_color
                 ]);
+
+                // Deduct stock from variant
+                if ($item->variant_id && $item->variant) {
+                    $item->variant->decrement('stock_quantity', $item->quantity);
+                }
             }
 
             // Clear selected items from cart
@@ -85,7 +106,7 @@ class OrderController extends Controller
                 // don't break order creation on notification failure
             }
 
-            return response()->json($order->load('items.product'), 201);
+            return response()->json($order->load(['items.product', 'items.variant']), 201);
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json(['message' => 'Order failed', 'error' => $e->getMessage()], 500);
@@ -94,7 +115,71 @@ class OrderController extends Controller
 
     public function show(Request $request, $id)
     {
-        $order = $request->user()->orders()->with('items.product')->findOrFail($id);
+        $order = $request->user()->orders()->with(['items.product', 'items.variant'])->findOrFail($id);
         return response()->json($order);
+    }
+
+    /**
+     * Mark order as received by customer.
+     */
+    public function markReceived(Request $request, $id)
+    {
+        $order = $request->user()->orders()->with(['items.product'])->findOrFail($id);
+
+        if (!$order->canBeReceived()) {
+            return response()->json([
+                'message' => 'This order cannot be marked as received. It must be completed first.'
+            ], 400);
+        }
+
+        $order->update(['received_at' => now()]);
+
+        // Get products that can be reviewed
+        $products = $order->items->map(function ($item) {
+            return [
+                'id' => $item->product_id,
+                'name' => $item->product->name,
+                'image' => $item->product->image,
+                'image_url' => $item->product->image_url,
+                'size' => $item->size,
+                'color' => $item->color,
+            ];
+        })->unique('id')->values();
+
+        return response()->json([
+            'message' => 'Order marked as received successfully!',
+            'order' => $order->fresh(),
+            'products_to_review' => $products,
+        ]);
+    }
+
+    /**
+     * Get products from a received order that can be reviewed.
+     */
+    public function getReviewableProducts(Request $request, $id)
+    {
+        $order = $request->user()->orders()->with(['items.product'])->findOrFail($id);
+
+        if (!$order->canBeReviewed()) {
+            return response()->json([
+                'message' => 'This order must be received before reviewing.',
+                'can_review' => false,
+            ], 400);
+        }
+
+        $unreviewedProducts = $order->getUnreviewedProducts();
+
+        $products = $unreviewedProducts->map(function ($product) {
+            return [
+                'id' => $product->id,
+                'name' => $product->name,
+                'image' => $product->image,
+            ];
+        })->values();
+
+        return response()->json([
+            'can_review' => true,
+            'products' => $products,
+        ]);
     }
 }

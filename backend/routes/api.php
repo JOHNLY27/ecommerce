@@ -56,6 +56,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/orders', [OrderController::class, 'index']);
     Route::post('/orders', [OrderController::class, 'store']);
     Route::get('/orders/{id}', [OrderController::class, 'show']);
+    Route::post('/orders/{id}/received', [OrderController::class, 'markReceived']);
+    Route::get('/orders/{id}/reviewable-products', [OrderController::class, 'getReviewableProducts']);
+
+    // Review routes
+    Route::get('/products/{productId}/reviews', [\App\Http\Controllers\ReviewController::class, 'index']);
+    Route::post('/products/{productId}/reviews', [\App\Http\Controllers\ReviewController::class, 'store']);
+    Route::put('/products/{productId}/reviews/{reviewId}', [\App\Http\Controllers\ReviewController::class, 'update']);
+    Route::delete('/products/{productId}/reviews/{reviewId}', [\App\Http\Controllers\ReviewController::class, 'destroy']);
+    Route::post('/products/{productId}/reviews/{reviewId}/helpful', [\App\Http\Controllers\ReviewController::class, 'markHelpful']);
+    Route::get('/products/{productId}/can-review', [\App\Http\Controllers\ReviewController::class, 'canReview']);
 
     // Admin routes
     Route::middleware('is_admin')->prefix('admin')->group(function () {
@@ -66,8 +76,27 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/products', [\App\Http\Controllers\AdminDashboardController::class, 'storeProduct']);
         Route::put('/products/{id}', [\App\Http\Controllers\AdminDashboardController::class, 'updateProduct']);
         Route::delete('/products/{id}', [\App\Http\Controllers\AdminDashboardController::class, 'deleteProduct']);
+        // Product Variants
+        Route::get('/products/{productId}/variants', [\App\Http\Controllers\AdminDashboardController::class, 'getProductVariants']);
+        Route::post('/products/{productId}/variants', [\App\Http\Controllers\AdminDashboardController::class, 'storeVariant']);
+        Route::post('/products/{productId}/variants/bulk', [\App\Http\Controllers\AdminDashboardController::class, 'bulkCreateVariants']);
+        Route::put('/products/{productId}/variants/{variantId}', [\App\Http\Controllers\AdminDashboardController::class, 'updateVariant']);
+        Route::delete('/products/{productId}/variants/{variantId}', [\App\Http\Controllers\AdminDashboardController::class, 'deleteVariant']);
+        // Reports & Analytics
+        Route::get('/reports/sales', [\App\Http\Controllers\AdminReportController::class, 'salesReport']);
+        Route::get('/reports/monthly', [\App\Http\Controllers\AdminReportController::class, 'monthlyReport']);
+        Route::get('/reports/products', [\App\Http\Controllers\AdminReportController::class, 'productReport']);
+        Route::get('/reports/export', [\App\Http\Controllers\AdminReportController::class, 'exportReport']);
         // Payment method settings (admin)
         Route::get('/payment-method', [\App\Http\Controllers\AdminPaymentMethodController::class, 'show']);
         Route::put('/payment-method', [\App\Http\Controllers\AdminPaymentMethodController::class, 'update']);
+        // Review Moderation
+        Route::get('/reviews', [\App\Http\Controllers\AdminReviewController::class, 'index']);
+        Route::post('/reviews/{id}/approve', [\App\Http\Controllers\AdminReviewController::class, 'approve']);
+        Route::post('/reviews/{id}/reject', [\App\Http\Controllers\AdminReviewController::class, 'reject']);
+        Route::post('/reviews/{id}/feature', [\App\Http\Controllers\AdminReviewController::class, 'toggleFeatured']);
+        Route::delete('/reviews/{id}', [\App\Http\Controllers\AdminReviewController::class, 'destroy']);
+        Route::post('/reviews/bulk-approve', [\App\Http\Controllers\AdminReviewController::class, 'bulkApprove']);
+        Route::post('/reviews/bulk-delete', [\App\Http\Controllers\AdminReviewController::class, 'bulkDelete']);
     });
 });

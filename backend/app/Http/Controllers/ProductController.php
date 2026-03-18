@@ -28,11 +28,31 @@ class ProductController extends Controller
             $query->where('is_sale', true);
         }
 
-        return response()->json($query->get());
+        $products = $query->get()->map(function ($product) {
+            // Add review stats to each product
+            $product->average_rating = $product->average_rating;
+            $product->reviews_count = $product->reviews_count;
+            return $product;
+        });
+
+        return response()->json($products);
     }
 
     public function show($id)
     {
-        return response()->json(Product::with('category')->findOrFail($id));
+        $product = Product::with(['category', 'variants' => function($query) {
+            $query->where('is_active', true)->orderBy('size')->orderBy('color');
+        }])->findOrFail($id);
+
+        // Add available sizes and colors from variants
+        $product->available_sizes = $product->available_sizes;
+        $product->available_colors = $product->available_colors;
+
+        // Add review stats
+        $product->average_rating = $product->average_rating;
+        $product->reviews_count = $product->reviews_count;
+        $product->rating_distribution = $product->rating_distribution;
+
+        return response()->json($product);
     }
 }

@@ -57,7 +57,10 @@ const Cart = () => {
 
     const total = cart
         .filter(item => selectedItemIds.includes(item.id))
-        .reduce((acc, item) => acc + (item.product.price * item.quantity), 0);
+        .reduce((acc, item) => {
+            const price = item.variant?.price || item.product?.price || 0;
+            return acc + (price * item.quantity);
+        }, 0);
 
     if (!user) {
         return (
@@ -103,18 +106,21 @@ const Cart = () => {
                                 />
                             </div>
                             <div style={{ width: '120px', aspectRatio: '3/4', backgroundColor: 'var(--bg-secondary)' }}>
-                                <img src={item.product?.image_url} alt={item.product?.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                <img src={item.variant?.image_url || item.product?.image_url} alt={item.product?.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                             </div>
                             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                                 <div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                                         <h3 style={{ fontSize: '1.25rem', marginBottom: '0.25rem' }}>{item.product?.name}</h3>
-                                        <span style={{ fontWeight: '600', fontSize: '1.25rem' }}>${Number(item.product?.price).toFixed(2)}</span>
+                                        <span style={{ fontWeight: '600', fontSize: '1.25rem' }}>
+                                            ${Number(item.variant?.price || item.product?.price || 0).toFixed(2)}
+                                        </span>
                                     </div>
-                                    <div style={{ color: 'var(--text-muted)', display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
-                                        <span>Quantity: {item.quantity}</span>
-                                        {item.size && <span>Size: {item.size}</span>}
-                                        {item.color && <span>Color: {item.color}</span>}
+                                    <div style={{ color: 'var(--text-muted)', display: 'flex', gap: '1rem', marginTop: '0.5rem', flexWrap: 'wrap' }}>
+                                        <span>Qty: {item.quantity}</span>
+                                        {(item.variant?.size || item.size) && <span>Size: {item.variant?.size || item.size}</span>}
+                                        {(item.variant?.color || item.color) && <span>Color: {item.variant?.color || item.color}</span>}
+                                        {item.variant?.sku && <span style={{ fontSize: '0.8rem', color: '#999' }}>SKU: {item.variant.sku}</span>}
                                     </div>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

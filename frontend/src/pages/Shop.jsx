@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
-import { ShoppingCart, Eye, Search } from 'lucide-react';
+import { ShoppingCart, Eye, Search, Star } from 'lucide-react';
 import { CartContext } from '../context/CartContext';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
@@ -168,6 +168,24 @@ const Shop = () => {
                                     <div>
                                         <h3 className="product-title">{product.name}</h3>
                                         <span className="product-category">{product.category?.name}</span>
+                                        {/* Rating Display */}
+                                        {product.reviews_count > 0 && (
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', marginTop: '0.25rem' }}>
+                                                <div style={{ display: 'flex', gap: '1px' }}>
+                                                    {[1, 2, 3, 4, 5].map((star) => (
+                                                        <Star
+                                                            key={star}
+                                                            size={12}
+                                                            style={{
+                                                                fill: star <= Math.round(product.average_rating) ? '#ffc107' : 'transparent',
+                                                                stroke: star <= Math.round(product.average_rating) ? '#ffc107' : '#ddd',
+                                                            }}
+                                                        />
+                                                    ))}
+                                                </div>
+                                                <span style={{ fontSize: '0.75rem', color: '#666' }}>({product.reviews_count})</span>
+                                            </div>
+                                        )}
                                     </div>
                                     <div className="product-price">${Number(product.price).toFixed(2)}</div>
                                 </div>
