@@ -225,12 +225,27 @@ const ProductDetail = () => {
 
                         return (
                             <>
-                                <img 
-                                    src={currentImage} 
-                                    alt={product.name} 
-                                    style={{ width: '100%', height: '100%', objectFit: 'cover', cursor: 'zoom-in' }} 
-                                    onClick={() => setIsZoomed(true)}
-                                />
+                                {imgs.map((img, idx) => (
+                                    <img 
+                                        key={idx}
+                                        src={img} 
+                                        alt={`${product.name} - ${idx + 1}`} 
+                                        style={{ 
+                                            position: 'absolute',
+                                            top: 0,
+                                            left: 0,
+                                            width: '100%', 
+                                            height: '100%', 
+                                            objectFit: 'cover', 
+                                            cursor: 'zoom-in',
+                                            opacity: currentImageIndex === idx ? 1 : 0,
+                                            transition: 'opacity 0.3s ease-in-out',
+                                            zIndex: currentImageIndex === idx ? 2 : 1,
+                                            pointerEvents: currentImageIndex === idx ? 'auto' : 'none'
+                                        }} 
+                                        onClick={() => setIsZoomed(true)}
+                                    />
+                                ))}
                                 {imgs.length > 1 && (
                                     <>
                                         <button 
