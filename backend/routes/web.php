@@ -16,13 +16,3 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-
-Route::get('/run-setup', function() {
-    try {
-        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
-        \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
-        return "Database correctly migrated and seeded!";
-    } catch (\Exception $e) {
-        return "Error: " . $e->getMessage();
-    }
-});
