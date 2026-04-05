@@ -7,6 +7,8 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\WishlistController;
+use App\Http\Controllers\CouponController;
 
 /*
 |--------------------------------------------------------------------------
@@ -52,10 +54,20 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/cart/{id}', [CartController::class, 'destroy']);
     Route::delete('/cart', [CartController::class, 'clear']);
 
+    // Wishlist routes
+    Route::get('/wishlist', [WishlistController::class, 'index']);
+    Route::post('/wishlist/toggle', [WishlistController::class, 'toggle']);
+
+    // Coupon validation and list
+    Route::get('/coupons/active', [CouponController::class, 'getActiveCoupons']);
+    Route::post('/coupons/validate', [CouponController::class, 'validateCoupon']);
+
     // Order routes
     Route::get('/orders', [OrderController::class, 'index']);
     Route::post('/orders', [OrderController::class, 'store']);
     Route::get('/orders/{id}', [OrderController::class, 'show']);
+    Route::post('/orders/{id}/cancel', [OrderController::class, 'cancel']);
+    Route::post('/orders/{id}/refund', [OrderController::class, 'requestRefund']);
     Route::post('/orders/{id}/received', [OrderController::class, 'markReceived']);
     Route::get('/orders/{id}/reviewable-products', [OrderController::class, 'getReviewableProducts']);
 
@@ -76,6 +88,18 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/products', [\App\Http\Controllers\AdminDashboardController::class, 'storeProduct']);
         Route::put('/products/{id}', [\App\Http\Controllers\AdminDashboardController::class, 'updateProduct']);
         Route::delete('/products/{id}', [\App\Http\Controllers\AdminDashboardController::class, 'deleteProduct']);
+        Route::get('/customers', [\App\Http\Controllers\AdminDashboardController::class, 'customers']);
+        
+        // Coupons
+        Route::get('/coupons', [\App\Http\Controllers\AdminDashboardController::class, 'coupons']);
+        Route::post('/coupons', [\App\Http\Controllers\AdminDashboardController::class, 'storeCoupon']);
+        Route::delete('/coupons/{id}', [\App\Http\Controllers\AdminDashboardController::class, 'deleteCoupon']);
+        
+        // Categories
+        Route::post('/categories', [CategoryController::class, 'store']);
+        Route::put('/categories/{id}', [CategoryController::class, 'update']);
+        Route::delete('/categories/{id}', [CategoryController::class, 'destroy']);
+
         // Product Variants
         Route::get('/products/{productId}/variants', [\App\Http\Controllers\AdminDashboardController::class, 'getProductVariants']);
         Route::post('/products/{productId}/variants', [\App\Http\Controllers\AdminDashboardController::class, 'storeVariant']);

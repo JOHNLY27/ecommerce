@@ -7,7 +7,7 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    axios.defaults.baseURL = 'http://127.0.0.1:8000/api';
+    axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.VITE_BACKEND_URL ? `${import.meta.env.VITE_BACKEND_URL}/api` : 'http://127.0.0.1:8000/api');
     axios.defaults.headers.common['Accept'] = 'application/json';
 
     useEffect(() => {
@@ -39,8 +39,8 @@ export const AuthProvider = ({ children }) => {
         return res.data;
     };
 
-    const register = async (name, email, password) => {
-        const res = await axios.post('/register', { name, email, password });
+    const register = async (name, email, password, phone, address) => {
+        const res = await axios.post('/register', { name, email, password, phone, address });
         localStorage.setItem('token', res.data.access_token);
         axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.access_token}`;
         setUser(res.data.user);

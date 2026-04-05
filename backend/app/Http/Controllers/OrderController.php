@@ -28,8 +28,25 @@ class OrderController extends Controller
             'contact' => 'required|string',
             'city' => 'required|string',
             'selected_item_ids' => 'required|array|min:1',
-            'selected_item_ids.*' => 'integer|exists:cart_items,id,user_id,'.$user->id
+            'selected_item_ids.*' => 'integer|exists:cart_items,id,user_id,'.$user->id,
+            'coupon_code' => 'nullable|string'
         ]);
+
+        $coupon = null;
+        $discountAmount = 0;
+        if ($request->coupon_code) {
+            $coupon = \App\Models\Coupon::where('code', strtoupper($request->coupon_code))->first();
+            if ($coupon && $coupon->is_active) {
+                if ((!$coupon->expires_at || now()->lessThan($coupon->expires_at)) && 
+                    (!$coupon->usage_limit || $coupon->used_count < $coupon->usage_limit)) {
+                    // Valid coupon
+                } else {
+                    $coupon = null;
+                }
+            } else {
+                $coupon = null;
+            }
+        }
 
         $cartItems = $user->cartItems()->whereIn('id', $request->selected_item_ids)->with(['product', 'variant'])->get();
 
@@ -53,6 +70,18 @@ class OrderController extends Controller
             }
         }
 
+        if ($coupon) {
+            if ($coupon->type === 'percent') {
+                $discountAmount = $totalAmount * ($coupon->value / 100);
+            } else {
+                $discountAmount = $coupon->value;
+            }
+            if ($discountAmount > $totalAmount) {
+                $discountAmount = $totalAmount;
+            }
+            $totalAmount -= $discountAmount;
+        }
+
         DB::beginTransaction();
         try {
             $order = Order::create([
@@ -62,8 +91,14 @@ class OrderController extends Controller
                 'payment_method' => $request->payment_method,
                 'address' => $request->address,
                 'contact' => $request->contact,
-                'city' => $request->city
+                'city' => $request->city,
+                'coupon_code' => $coupon ? $coupon->code : null,
+                'discount_amount' => $discountAmount
             ]);
+
+            if ($coupon) {
+                $coupon->increment('used_count');
+            }
 
             foreach ($cartItems as $item) {
                 $price = $item->variant ? $item->variant->effective_price : $item->product->price;
@@ -181,5 +216,47 @@ class OrderController extends Controller
             'can_review' => true,
             'products' => $products,
         ]);
+    }
+
+    public function cancel(Request $request, $id)
+    {
+        $order = $request->user()->orders()->with(['items.variant', 'items.product'])->findOrFail($id);
+
+        if ($order->status !== 'pending') {
+            return response()->json(['message' => 'Only pending orders can be cancelled.'], 400);
+        }
+
+        DB::beginTransaction();
+        try {
+            $order->update(['status' => 'cancelled']);
+
+            // Restock items
+            foreach ($order->items as $item) {
+                if ($item->variant_id && $item->variant) {
+                    $item->variant->increment('stock_quantity', $item->quantity);
+                } else if ($item->product) {
+                    $item->product->increment('stock_quantity', $item->quantity);
+                }
+            }
+
+            DB::commit();
+            return response()->json(['message' => 'Order cancelled successfully', 'order' => $order]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['message' => 'Failed to cancel order'], 500);
+        }
+    }
+
+    public function requestRefund(Request $request, $id)
+    {
+        $order = $request->user()->orders()->findOrFail($id);
+
+        // Can only refund if marked completed or received
+        if ($order->status !== 'completed' && $order->status !== 'delivered') {
+            return response()->json(['message' => 'Only completed or delivered orders can be refunded.'], 400);
+        }
+
+        $order->update(['status' => 'refund_requested']);
+        return response()->json(['message' => 'Refund requested successfully', 'order' => $order]);
     }
 }

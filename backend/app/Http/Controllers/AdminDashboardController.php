@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Models\User;
 use App\Models\Category;
+use App\Models\Coupon;
 
 class AdminDashboardController extends Controller
 {
@@ -26,6 +27,50 @@ class AdminDashboardController extends Controller
         ]);
     }
 
+    public function coupons()
+    {
+        $coupons = Coupon::orderBy('created_at', 'desc')->get();
+        return response()->json($coupons);
+    }
+
+    public function storeCoupon(Request $request)
+    {
+        $validated = $request->validate([
+            'code' => 'required|string|unique:coupons,code',
+            'type' => 'required|in:percent,fixed',
+            'value' => 'required|numeric|min:0',
+            'usage_limit' => 'nullable|integer|min:1',
+            'expires_at' => 'nullable|date',
+            'is_active' => 'boolean'
+        ]);
+
+        $validated['code'] = strtoupper($validated['code']);
+        $validated['is_active'] = $validated['is_active'] ?? true;
+
+        $coupon = Coupon::create($validated);
+        return response()->json($coupon, 201);
+    }
+
+    public function deleteCoupon($id)
+    {
+        $coupon = Coupon::findOrFail($id);
+        $coupon->delete();
+        return response()->json(['message' => 'Coupon deleted successfully']);
+    }
+
+    public function customers()
+    {
+        $customers = User::where('is_admin', false)
+            ->withCount('orders')
+            ->withSum(['orders' => function ($query) {
+                $query->where('status', '!=', 'cancelled');
+            }], 'total_amount')
+            ->orderBy('created_at', 'desc')
+            ->get();
+            
+        return response()->json($customers);
+    }
+
     public function orders()
     {
         $orders = Order::with(['user', 'items.product', 'items.variant'])->orderBy('created_at', 'desc')->get();
@@ -34,9 +79,21 @@ class AdminDashboardController extends Controller
 
     public function updateOrderStatus(Request $request, $id)
     {
-        $order = Order::with('user')->findOrFail($id);
+        $order = Order::with(['user', 'items.variant', 'items.product'])->findOrFail($id);
         $oldStatus = $order->status;
         $newStatus = $request->status;
+        
+        // If changing to refunded (from a non-refunded/non-cancelled state), restock.
+        if ($newStatus === 'refunded' && $oldStatus !== 'refunded' && $oldStatus !== 'cancelled') {
+            foreach ($order->items as $item) {
+                if ($item->variant_id && $item->variant) {
+                    $item->variant->increment('stock_quantity', $item->quantity);
+                } else if ($item->product) {
+                    $item->product->increment('stock_quantity', $item->quantity);
+                }
+            }
+        }
+
         $order->status = $newStatus;
         $order->save();
 
@@ -75,12 +132,31 @@ class AdminDashboardController extends Controller
             'price' => 'required|numeric|min:0',
             'stock_quantity' => 'required|integer|min:0',
             'category_id' => 'required|exists:categories,id',
+            'subcategory' => 'nullable|string',
             'image_url' => 'nullable|url',
-            'sizes' => 'nullable|array',
-            'colors' => 'nullable|array',
-            'is_new_arrival' => 'boolean',
-            'is_sale' => 'boolean'
+            'sizes' => 'nullable',
+            'colors' => 'nullable',
+            'is_new_arrival' => 'nullable|boolean',
+            'is_sale' => 'nullable|boolean',
+            'is_trending' => 'nullable|boolean',
+            'images.*' => 'nullable|image|max:10240'
         ]);
+
+        if (is_string($validated['sizes'] ?? null)) {
+            $validated['sizes'] = json_decode($validated['sizes'], true);
+        }
+        if (is_string($validated['colors'] ?? null)) {
+            $validated['colors'] = json_decode($validated['colors'], true);
+        }
+
+        $uploadedImages = [];
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $file) {
+                $path = $file->store('products', 'public');
+                $uploadedImages[] = '/storage/' . $path;
+            }
+        }
+        $validated['images'] = $uploadedImages;
 
         // If marked as sale, ensure category is SALE and assign its id
         if (!empty($validated['is_sale'])) {
@@ -103,12 +179,39 @@ class AdminDashboardController extends Controller
             'price' => 'sometimes|required|numeric|min:0',
             'stock_quantity' => 'sometimes|required|integer|min:0',
             'category_id' => 'sometimes|required|exists:categories,id',
+            'subcategory' => 'nullable|string',
             'image_url' => 'nullable|url',
-            'sizes' => 'nullable|array',
-            'colors' => 'nullable|array',
-            'is_new_arrival' => 'boolean',
-            'is_sale' => 'boolean'
+            'sizes' => 'nullable',
+            'colors' => 'nullable',
+            'is_new_arrival' => 'nullable|boolean',
+            'is_sale' => 'nullable|boolean',
+            'is_trending' => 'nullable|boolean',
+            'images.*' => 'nullable|image|max:10240',
+            'existing_images' => 'nullable'
         ]);
+
+        if (is_string($validated['sizes'] ?? null)) {
+            $validated['sizes'] = json_decode($validated['sizes'], true);
+        }
+        if (is_string($validated['colors'] ?? null)) {
+            $validated['colors'] = json_decode($validated['colors'], true);
+        }
+
+        $uploadedImages = [];
+        if (!empty($validated['existing_images'])) {
+            $existing = is_string($validated['existing_images']) ? json_decode($validated['existing_images'], true) : $validated['existing_images'];
+            if (is_array($existing)) {
+                $uploadedImages = $existing;
+            }
+        }
+
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $file) {
+                $path = $file->store('products', 'public');
+                $uploadedImages[] = '/storage/' . $path;
+            }
+        }
+        $validated['images'] = $uploadedImages;
 
         // If marked as sale, ensure category is SALE and assign its id
         if (!empty($validated['is_sale'])) {

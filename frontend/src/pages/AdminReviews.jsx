@@ -128,8 +128,11 @@ const AdminReviews = () => {
     return (
         <div className="container" style={{ padding: '2rem 0' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>Review Moderation</h1>
-                <Link to="/admin" className="btn btn-outline">Back to Dashboard</Link>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <Link to="/admin" className="admin-back-link">Back</Link>
+                    <span style={{ color: 'var(--border)' }}>|</span>
+                    <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>Review Moderation</h1>
+                </div>
             </div>
 
             {/* Stats Cards */}

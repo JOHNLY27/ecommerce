@@ -15,12 +15,28 @@ class ProductController extends Controller
             $query->where('category_id', $request->category_id);
         }
 
+        if ($request->has('subcategory')) {
+            $query->where('subcategory', $request->subcategory);
+        }
+
         if ($request->has('search')) {
             $query->where('name', 'like', '%' . $request->search . '%');
         }
 
+        if ($request->has('min_price') && $request->min_price !== '') {
+            $query->where('price', '>=', $request->min_price);
+        }
+
+        if ($request->has('max_price') && $request->max_price !== '') {
+            $query->where('price', '<=', $request->max_price);
+        }
+
         if ($request->has('sort') && $request->sort === 'new') {
             $query->where('is_new_arrival', true);
+        }
+
+        if ($request->has('is_trending') && $request->is_trending) {
+            $query->where('is_trending', true);
         }
 
         // Filter sale items when requested

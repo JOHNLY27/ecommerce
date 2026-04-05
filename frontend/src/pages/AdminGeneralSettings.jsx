@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const AdminGeneralSettings = () => {
     const { user, loading } = useContext(AuthContext);
@@ -51,7 +51,11 @@ const AdminGeneralSettings = () => {
 
     return (
         <div className="container" style={{ maxWidth: '700px' }}>
-            <h1>General Settings</h1>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
+                <Link to="/admin" className="admin-back-link">Back</Link>
+                <span style={{ color: 'var(--border)' }}>|</span>
+                <h1 style={{ margin: 0 }}>General Settings</h1>
+            </div>
             <form onSubmit={handleSave} className="card" style={{ padding: '1rem' }}>
                 <div className="form-group">
                     <label className="form-label">Store Name</label>

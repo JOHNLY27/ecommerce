@@ -16,6 +16,8 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
+            'phone' => 'required|string|max:20',
+            'address' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -26,6 +28,8 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'phone' => $request->phone,
+            'address' => $request->address,
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
@@ -77,6 +81,8 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'sometimes|required|string|max:255',
             'email' => 'sometimes|required|email|max:255|unique:users,email,' . $user->id,
+            'phone' => 'sometimes|required|string|max:20',
+            'address' => 'sometimes|required|string',
             'photo' => 'sometimes|file|image|max:5120',
             'notification_settings' => 'sometimes|array'
         ]);
@@ -93,6 +99,8 @@ class AuthController extends Controller
 
         if ($request->has('name')) $user->name = $request->input('name');
         if ($request->has('email')) $user->email = $request->input('email');
+        if ($request->has('phone')) $user->phone = $request->input('phone');
+        if ($request->has('address')) $user->address = $request->input('address');
         if ($request->has('notification_settings')) {
             $user->notification_settings = $request->input('notification_settings');
         }

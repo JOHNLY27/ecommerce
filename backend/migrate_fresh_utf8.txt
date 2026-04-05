@@ -1,0 +1,57 @@
+﻿php : PHP Warning:  Module 
+'fileinfo' already loaded in 
+Unknown on line 0
+At line:1 char:1
++ php artisan migrate:fresh 
+--seed > 
+migrate_fresh_output.txt 2>&1
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~
+    + CategoryInfo           
+   : NotSpecified: (PHP War  
+  ning:  M...known on line   
+  0:String) [], RemoteExc    
+eption
+    + FullyQualifiedErrorId  
+   : NativeCommandError
+ 
+PHP Warning:  Module 
+'mbstring' already loaded in 
+Unknown on line 0
+PHP Warning:  Module 
+'openssl' already loaded in 
+Unknown on line 0
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it.
+ (SQL: SHOW FULL TABLES WHERE table_type = 'BASE TABLE')
+
+  at C:\Users\Public\Primewear\backend\vendor\laravel\framework\src\Illuminate\Database\Connection.php:712
+    708Γûò         // If an exception occurs when attempting to run a query, we'll format the error
+    709Γûò         // message to include the bindings with SQL, which will make this exception a
+    710Γûò         // lot more helpful to the developer instead of just the database's errors.
+    711Γûò         catch (Exception $e) {
+  Γ₧£ 712Γûò             throw new QueryException(
+    713Γûò                 $query, $this->prepareBindings($bindings), $e
+    714Γûò             );
+    715Γûò         }
+    716Γûò     }
+
+  1   C:\Users\Public\Primewear\backend\vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:70
+      PDOException::("SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it.
+")
+
+  2   C:\Users\Public\Primewear\backend\vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:70
+      PDO::__construct()
+
+   Whoops\Exception\ErrorException 
+
+  Module 'openssl' already loaded
+
+  1   C:\Users\Public\Primewear\backend\vendor\filp\whoops\src\Whoops\Run.php:524
+      Whoops\Run::handleError()
+
+  2   [internal]:0
+      Whoops\Run::handleShutdown()
