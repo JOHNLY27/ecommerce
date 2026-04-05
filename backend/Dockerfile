@@ -30,6 +30,9 @@ COPY . .
 # Install dependencies bypassing strict lockfile checks
 RUN composer install --optimize-autoloader --no-dev --ignore-platform-reqs
 
+# Create the storage symlink for uploaded images
+RUN php artisan storage:link
+
 # Allow the script to run migrations or other commands
 EXPOSE 8000
 
