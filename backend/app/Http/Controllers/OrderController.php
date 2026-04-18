@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Notifications\AdminEventNotification;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\OrderConfirmationMail;
 
 class OrderController extends Controller
 {
@@ -139,6 +141,13 @@ class OrderController extends Controller
                 }
             } catch (\Throwable $e) {
                 // don't break order creation on notification failure
+            }
+
+            // Send order confirmation email to the customer
+            try {
+                Mail::to($user->email)->send(new OrderConfirmationMail($order));
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::error('Order Confirmation Email Failed: ' . $e->getMessage());
             }
 
             return response()->json($order->load(['items.product', 'items.variant']), 201);

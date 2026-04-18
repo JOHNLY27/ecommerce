@@ -66,11 +66,15 @@ export const AuthProvider = ({ children }) => {
                 const form = new FormData();
                 if (payload.name) form.append('name', payload.name);
                 if (payload.email) form.append('email', payload.email);
+                if (payload.phone) form.append('phone', payload.phone);
+                if (payload.address) form.append('address', payload.address);
                 form.append('photo', payload.photo);
                 res = await axios.post('/me', form, { headers: { 'Content-Type': 'multipart/form-data' } });
             } else {
-                // send JSON to the same endpoint
-                res = await axios.post('/me', payload);
+                // Remove photo key to prevent Laravel validation from failing on 'null' file
+                const data = { ...payload };
+                delete data.photo;
+                res = await axios.post('/me', data);
             }
             // assume API returns updated user object
             setUser(res.data);

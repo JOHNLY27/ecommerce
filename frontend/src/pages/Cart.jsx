@@ -23,6 +23,21 @@ const Cart = () => {
     const [availableCoupons, setAvailableCoupons] = useState([]);
 
     useEffect(() => {
+        if (user) {
+            setContact(user.phone || '');
+            setAddress(user.address || '');
+            
+            // Try to extract city if address has commas (e.g., Street, Barangay, City, Province, Country)
+            const parts = (user.address || '').split(',');
+            if (parts.length >= 3) {
+                setCity(parts[parts.length - 3].trim());
+            } else {
+                setCity('Saved on profile');
+            }
+        }
+    }, [user]);
+
+    useEffect(() => {
         const fetchCoupons = async () => {
             try {
                 const res = await axios.get('/coupons/active');
@@ -316,14 +331,16 @@ const Cart = () => {
                     )}
 
                     <div className="form-group" style={{ marginTop: '1rem' }}>
-                        <label className="form-label">Delivery Address</label>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                            <label className="form-label" style={{ marginBottom: 0 }}>Delivery Address</label>
+                        </div>
                         <textarea
                             className="form-control"
                             rows="2"
                             value={address}
                             onChange={(e) => setAddress(e.target.value)}
-                            placeholder="Enter your full delivery address"
-                            required
+                            disabled
+                            style={{ backgroundColor: 'var(--bg-secondary)', cursor: 'not-allowed', color: '#555' }}
                         ></textarea>
                     </div>
 
@@ -334,21 +351,25 @@ const Cart = () => {
                             className="form-control"
                             value={contact}
                             onChange={(e) => setContact(e.target.value)}
-                            placeholder="e.g. 09123456789"
-                            required
+                            disabled
+                            style={{ backgroundColor: 'var(--bg-secondary)', cursor: 'not-allowed', color: '#555' }}
                         />
                     </div>
 
-                    <div className="form-group" style={{ marginTop: '1rem', marginBottom: '2rem' }}>
+                    <div className="form-group" style={{ marginTop: '1rem', marginBottom: '1.5rem' }}>
                         <label className="form-label">City</label>
                         <input
                             type="text"
                             className="form-control"
                             value={city}
                             onChange={(e) => setCity(e.target.value)}
-                            placeholder="Enter your City"
-                            required
+                            disabled
+                            style={{ backgroundColor: 'var(--bg-secondary)', cursor: 'not-allowed', color: '#555' }}
                         />
+                    </div>
+                    
+                    <div style={{ textAlign: 'right', marginBottom: '2rem' }}>
+                        <Link to="/profile" style={{ fontSize: '0.85rem', color: 'var(--primary)', fontWeight: '600' }}>✏️ Edit Address in Profile</Link>
                     </div>
 
                     <button className="btn btn-primary" style={{ width: '100%', padding: '1.25rem' }} onClick={handleCheckout}>

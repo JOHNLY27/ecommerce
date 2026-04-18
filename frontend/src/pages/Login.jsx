@@ -1,10 +1,12 @@
 import { useState, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
+import { Eye, EyeOff } from 'lucide-react';
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
     const { login } = useContext(AuthContext);
     const navigate = useNavigate();
@@ -53,14 +55,37 @@ const Login = () => {
                         </div>
                         <div className="form-group" style={{ marginBottom: '0.75rem' }}>
                             <label className="form-label" style={{ fontWeight: '600' }}>Password</label>
-                            <input
-                                type="password"
-                                className="form-control"
-                                value={password}
-                                onChange={e => setPassword(e.target.value)}
-                                placeholder="••••••••"
-                                required
-                            />
+                            <div style={{ position: 'relative' }}>
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    className="form-control"
+                                    value={password}
+                                    onChange={e => setPassword(e.target.value)}
+                                    placeholder="••••••••"
+                                    required
+                                    style={{ paddingRight: '2.5rem' }}
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    style={{
+                                        position: 'absolute',
+                                        right: '0.75rem',
+                                        top: '50%',
+                                        transform: 'translateY(-50%)',
+                                        background: 'none',
+                                        border: 'none',
+                                        cursor: 'pointer',
+                                        color: '#9ca3af',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        padding: 0
+                                    }}
+                                >
+                                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                </button>
+                            </div>
                         </div>
                         <div style={{ textAlign: 'right', marginBottom: '1.5rem' }}>
                             <Link to="/forgot-password" style={{ fontSize: '0.85rem', fontWeight: '600', color: 'var(--primary)', textDecoration: 'none' }}>Forgot password?</Link>

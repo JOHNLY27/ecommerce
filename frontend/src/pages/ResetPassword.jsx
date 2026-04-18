@@ -265,7 +265,7 @@ const ResetPassword = () => {
                 </div>
             </div>
 
-            <div className="auth-image-container" style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80")' }}>
+            <div className="auth-image-container" style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1539109136881-3be0616acf4b?q=80&w=1920&auto=format&fit=crop")' }}>
                 <div className="auth-image-overlay"></div>
                 <div className="auth-image-text">
                     <h2>Almost There.</h2>

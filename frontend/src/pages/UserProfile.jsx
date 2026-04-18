@@ -9,10 +9,32 @@ const UserProfile = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
-    const [address, setAddress] = useState('');
+    const [country, setCountry] = useState('Philippines');
+    const [province, setProvince] = useState('');
+    const [city, setCity] = useState('');
+    const [barangay, setBarangay] = useState('');
+    const [street, setStreet] = useState('');
     const [photoFile, setPhotoFile] = useState(null);
     const [preview, setPreview] = useState(null);
     const [saving, setSaving] = useState(false);
+
+    const parseAddressToState = (addressObj) => {
+        const savedAddress = addressObj || '';
+        const parts = savedAddress.split(',').map(s => s.trim());
+        if (parts.length >= 5) {
+            setStreet(parts.slice(0, parts.length - 4).join(', '));
+            setBarangay(parts[parts.length - 4]);
+            setCity(parts[parts.length - 3]);
+            setProvince(parts[parts.length - 2]);
+            setCountry(parts[parts.length - 1]);
+        } else {
+            setStreet(savedAddress);
+            setBarangay('');
+            setCity('');
+            setProvince('');
+            setCountry('Philippines');
+        }
+    };
 
     useEffect(() => {
         if (!loading) {
@@ -20,7 +42,8 @@ const UserProfile = () => {
             setName(user.name || '');
             setEmail(user.email || '');
             setPhone(user.phone || '');
-            setAddress(user.address || '');
+            parseAddressToState(user.address);
+            
             // attempt to use common avatar fields if present; if stored path, prefix storage URL
             const photoField = user.profile_photo || user.profile_photo_path || user.avatar_url || user.profile_photo_url || user.avatar || null;
             if (photoField) {
@@ -48,8 +71,9 @@ const UserProfile = () => {
     const handleSave = async (e) => {
         e.preventDefault();
         setSaving(true);
+        const fullAddress = `${street}, ${barangay}, ${city}, ${province}, ${country}`;
         try {
-            await updateUser({ name, email, phone, address, photo: photoFile });
+            await updateUser({ name, email, phone, address: fullAddress, photo: photoFile });
             alert('Profile updated.');
         } catch (err) {
             alert('Failed to save profile.');
@@ -103,7 +127,7 @@ const UserProfile = () => {
 
                     <div className="form-group">
                         <label className="form-label" style={{ fontWeight: 600 }}>Phone Number</label>
-                        <input type="tel" className="form-control" value={phone} onChange={e => setPhone(e.target.value)} placeholder="Enter your phone number" style={{ padding: '0.8rem', borderRadius: '8px' }} />
+                        <input type="tel" className="form-control" value={phone} onChange={e => setPhone(e.target.value)} placeholder="Enter your phone number" style={{ padding: '0.8rem', borderRadius: '8px' }} required />
                     </div>
 
                     <div className="form-group">
@@ -112,9 +136,73 @@ const UserProfile = () => {
                     </div>
                 </div>
 
-                <div className="form-group" style={{ marginTop: '1.5rem' }}>
-                    <label className="form-label" style={{ fontWeight: 600 }}>Shipping Address</label>
-                    <textarea className="form-control" value={address} onChange={e => setAddress(e.target.value)} rows="3" placeholder="Enter your delivery address" style={{ resize: 'vertical', padding: '0.8rem', borderRadius: '8px' }}></textarea>
+                <div style={{ borderTop: '1px solid #eee', paddingTop: '1.5rem', marginTop: '1.5rem', marginBottom: '0.5rem' }}>
+                    <h3 style={{ fontSize: '1.1rem', marginBottom: '1.5rem', fontWeight: 700 }}>Delivery Address</h3>
+                    
+                    <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: '1.5rem', marginBottom: '1.5rem' }}>
+                        <div className="form-group">
+                            <label className="form-label" style={{ fontWeight: 600 }}>Country</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                value={country}
+                                disabled
+                                style={{ backgroundColor: '#f8f9fa', cursor: 'not-allowed', padding: '0.8rem', borderRadius: '8px' }}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label className="form-label" style={{ fontWeight: 600 }}>Province / Region</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                value={province}
+                                onChange={e => setProvince(e.target.value)}
+                                placeholder="e.g. Agusan del Norte"
+                                required
+                                style={{ padding: '0.8rem', borderRadius: '8px' }}
+                            />
+                        </div>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: '1.5rem', marginBottom: '1.5rem' }}>
+                        <div className="form-group">
+                            <label className="form-label" style={{ fontWeight: 600 }}>City / Municipality</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                value={city}
+                                onChange={e => setCity(e.target.value)}
+                                placeholder="e.g. Butuan City"
+                                required
+                                style={{ padding: '0.8rem', borderRadius: '8px' }}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label className="form-label" style={{ fontWeight: 600 }}>Barangay</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                value={barangay}
+                                onChange={e => setBarangay(e.target.value)}
+                                placeholder="e.g. Buhangin"
+                                required
+                                style={{ padding: '0.8rem', borderRadius: '8px' }}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="form-group">
+                        <label className="form-label" style={{ fontWeight: 600 }}>Street Name, Building, House No., or Purok</label>
+                        <input
+                            type="text"
+                            className="form-control"
+                            value={street}
+                            onChange={e => setStreet(e.target.value)}
+                            placeholder="e.g. Purok 4"
+                            required
+                            style={{ padding: '0.8rem', borderRadius: '8px' }}
+                        />
+                    </div>
                 </div>
 
                 <div style={{ marginTop: '2.5rem', display: 'flex', gap: '1rem', justifyContent: 'flex-end', flexWrap: 'wrap' }}>
@@ -126,7 +214,7 @@ const UserProfile = () => {
                             setName(user.name || ''); 
                             setEmail(user.email || ''); 
                             setPhone(user.phone || ''); 
-                            setAddress(user.address || ''); 
+                            parseAddressToState(user.address);
                             setPhotoFile(null); 
                             const photoField = user.profile_photo || user.profile_photo_path || user.avatar_url || user.profile_photo_url || user.avatar || null;
                             if (photoField) {

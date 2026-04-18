@@ -1,13 +1,21 @@
 import { useState, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
+import { Eye, EyeOff } from 'lucide-react';
 
 const Register = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [phone, setPhone] = useState('');
-    const [address, setAddress] = useState('');
+    const [country] = useState('Philippines'); // Fixed to Philippines
+    const [province, setProvince] = useState('');
+    const [city, setCity] = useState('');
+    const [barangay, setBarangay] = useState('');
+    const [street, setStreet] = useState('');
     const [error, setError] = useState('');
     const { register } = useContext(AuthContext);
     const navigate = useNavigate();
@@ -15,8 +23,21 @@ const Register = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+        
+        if (password !== confirmPassword) {
+            setError('Passwords do not match.');
+            return;
+        }
+
+        if (!province || !city || !barangay) {
+            setError('Please enter a Province, City, and Barangay.');
+            return;
+        }
+
+        const fullAddress = `${street}, ${barangay}, ${city}, ${province}, ${country}`;
+        
         try {
-            await register(name, email, password, phone, address);
+            await register(name, email, password, phone, fullAddress);
             navigate('/');
         } catch (err) {
             setError(err.response?.data?.message || 'Registration failed. Please check your details and try again.');
@@ -25,7 +46,7 @@ const Register = () => {
 
     return (
         <div className="auth-layout">
-            <div className="auth-form-container">
+            <div className="auth-form-container" style={{ padding: '2rem 1rem' }}>
                 <div style={{ width: '100%', maxWidth: '500px' }}>
                     <h1 style={{ fontSize: '2.5rem', marginBottom: '0.5rem', fontWeight: '700' }}>Create Account</h1>
                     <p style={{ color: 'var(--text-muted)', marginBottom: '2rem' }}>Fill in the details below to complete your registration.</p>
@@ -43,6 +64,27 @@ const Register = () => {
                                 placeholder="John Doe"
                                 required
                             />
+                        </div>
+
+                        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: '1rem' }}>
+                            <div className="form-group">
+                                <label className="form-label" style={{ fontWeight: '600' }}>Password</label>
+                                <div style={{ position: 'relative' }}>
+                                    <input type={showPassword ? "text" : "password"} className="form-control" value={password} onChange={e => setPassword(e.target.value)} placeholder="Minimum 8 chars" required minLength="8" style={{ paddingRight: '2.5rem' }} />
+                                    <button type="button" onClick={() => setShowPassword(!showPassword)} style={{ position: 'absolute', right: '0.75rem', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0 }}>
+                                        {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="form-group">
+                                <label className="form-label" style={{ fontWeight: '600' }}>Confirm Password</label>
+                                <div style={{ position: 'relative' }}>
+                                    <input type={showConfirmPassword ? "text" : "password"} className="form-control" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} placeholder="Confirm password" required minLength="8" style={{ paddingRight: '2.5rem' }} />
+                                    <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} style={{ position: 'absolute', right: '0.75rem', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0 }}>
+                                        {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                         
                         <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: '1rem' }}>
@@ -64,37 +106,78 @@ const Register = () => {
                                     className="form-control"
                                     value={phone}
                                     onChange={e => setPhone(e.target.value)}
-                                    placeholder="+1 (555) 000-0000"
+                                    placeholder="0917 123 4567"
                                     required
                                 />
                             </div>
                         </div>
                         
-                        <div className="form-group">
-                            <label className="form-label" style={{ fontWeight: '600' }}>Delivery Address</label>
-                            <textarea
-                                className="form-control"
-                                value={address}
-                                onChange={e => setAddress(e.target.value)}
-                                placeholder="Enter your full street address, city, and zip code"
-                                rows="2"
-                                required
-                                style={{ resize: 'vertical' }}
-                            ></textarea>
+                        <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1.5rem', marginTop: '0.5rem', marginBottom: '0.5rem' }}>
+                            <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem' }}>Delivery Address</h3>
+                            
+                            <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: '1rem' }}>
+                                <div className="form-group" style={{ marginBottom: '1rem' }}>
+                                    <label className="form-label" style={{ fontSize: '0.85rem' }}>Country</label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        value={country}
+                                        disabled
+                                        style={{ backgroundColor: 'var(--bg-secondary)', cursor: 'not-allowed' }}
+                                    />
+                                </div>
+                                <div className="form-group" style={{ marginBottom: '1rem' }}>
+                                    <label className="form-label" style={{ fontSize: '0.85rem' }}>Province / Region</label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        value={province}
+                                        onChange={e => setProvince(e.target.value)}
+                                        placeholder="e.g. Agusan del Norte"
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: '1rem' }}>
+                                <div className="form-group" style={{ marginBottom: '1rem' }}>
+                                    <label className="form-label" style={{ fontSize: '0.85rem' }}>City / Municipality</label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        value={city}
+                                        onChange={e => setCity(e.target.value)}
+                                        placeholder="e.g. Butuan City"
+                                        required
+                                    />
+                                </div>
+                                <div className="form-group" style={{ marginBottom: '1rem' }}>
+                                    <label className="form-label" style={{ fontSize: '0.85rem' }}>Barangay</label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        value={barangay}
+                                        onChange={e => setBarangay(e.target.value)}
+                                        placeholder="e.g. Buhangin"
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="form-group">
+                                <label className="form-label" style={{ fontSize: '0.85rem' }}>Street Name, Building, House No., or Purok</label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    value={street}
+                                    onChange={e => setStreet(e.target.value)}
+                                    placeholder="e.g. Purok 4"
+                                    required
+                                />
+                            </div>
                         </div>
 
-                        <div className="form-group" style={{ marginBottom: '2rem' }}>
-                            <label className="form-label" style={{ fontWeight: '600' }}>Password</label>
-                            <input
-                                type="password"
-                                className="form-control"
-                                value={password}
-                                onChange={e => setPassword(e.target.value)}
-                                placeholder="Minimum 8 characters"
-                                required
-                                minLength="8"
-                            />
-                        </div>
+
                         
                         <button type="submit" className="btn btn-primary" style={{ width: '100%', padding: '0.85rem', fontSize: '1rem', fontWeight: '600', borderRadius: '8px' }}>Create Account</button>
                     </form>
