@@ -9,12 +9,12 @@ Here is a summary of your recent purchase:
 | Item       | Size / Color | Quantity | Price |
 | :--------- | :---------- | :------: | ----: |
 @foreach($order->items as $item)
-| **{{ $item->product->name }}** | {{ $item->size ?? 'N/A' }} / {{ $item->color ?? 'N/A' }} | {{ $item->quantity }} | PHP {{ number_format($item->price * $item->quantity, 2) }} |
+| **{{ $item->product->name }}** | {{ $item->size ?? 'N/A' }} / {{ $item->color ?? 'N/A' }} | {{ $item->quantity }} | ₱{{ number_format($item->price * $item->quantity, 2) }} |
 @endforeach
 @if($order->discount_amount > 0)
-| | | **Discount** | - PHP {{ number_format($order->discount_amount, 2) }} |
+| | | **Discount** | - ₱{{ number_format($order->discount_amount, 2) }} |
 @endif
-| | | **Total** | **PHP {{ number_format($order->total_amount, 2) }}** |
+| | | **Total** | **₱{{ number_format($order->total_amount, 2) }}** |
 @endcomponent
 
 **Shipping Information:**
