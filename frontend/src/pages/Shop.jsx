@@ -340,7 +340,7 @@ const Shop = () => {
                                                         </div>
                                                     )}
                                                 </div>
-                                                <div className="product-price">${Number(product.price).toFixed(2)}</div>
+                                                <div className="product-price">₱{Number(product.price).toFixed(2)}</div>
                                             </div>
                                         </motion.div>
                                     ))}

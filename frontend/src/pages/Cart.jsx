@@ -181,7 +181,7 @@ const Cart = () => {
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem' }}>
                                         <h3 style={{ fontSize: '1.25rem', marginBottom: '0.25rem' }}>{item.product?.name}</h3>
                                         <span style={{ fontWeight: '600', fontSize: '1.25rem' }}>
-                                            ${Number(item.variant?.price || item.product?.price || 0).toFixed(2)}
+                                            ₱{Number(item.variant?.price || item.product?.price || 0).toFixed(2)}
                                         </span>
                                     </div>
                                     <div style={{ color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '0.5rem', flexWrap: 'wrap' }}>

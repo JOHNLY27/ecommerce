@@ -123,7 +123,7 @@ const ReviewSection = ({ productId }) => {
     };
 
     const formatDate = (dateString) => {
-        return new Date(dateString).toLocaleDateString('en-US', {
+        return new Date(dateString).toLocaleDateString('en-PH', {
             year: 'numeric',
             month: 'long',
             day: 'numeric'

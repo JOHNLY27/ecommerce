@@ -157,7 +157,7 @@ const Reports = () => {
                                         minHeight: data.revenue > 0 ? '4px' : '0',
                                         transition: 'height 0.5s cubic-bezier(0.25, 1, 0.5, 1)',
                                     }}
-                                    title={`Revenue: $${data.revenue.toFixed(2)}`}
+                                    title={`Revenue: ₱${data.revenue.toFixed(2)}`}
                                 />
                                 <div
                                     style={{
@@ -257,7 +257,7 @@ const Reports = () => {
                     <div style={{ display: 'flex', gap: '3rem', flexWrap: 'wrap' }}>
                         <div>
                             <div style={{ fontSize: '2.25rem', fontWeight: 700, lineHeight: 1.2 }}>
-                                {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(thisMonthRevenue)}
+                                {new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(thisMonthRevenue)}
                             </div>
                             <div style={{ fontSize: '0.85rem', opacity: 0.6, marginTop: '0.25rem' }}>Total Sales Revenue</div>
                         </div>
@@ -267,7 +267,7 @@ const Reports = () => {
                         </div>
                         <div>
                             <div style={{ fontSize: '2.25rem', fontWeight: 700, lineHeight: 1.2, color: 'var(--accent)' }}>
-                                {thisMonthOrderCount > 0 ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(thisMonthRevenue / thisMonthOrderCount) : '$0.00'}
+                                {thisMonthOrderCount > 0 ? new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(thisMonthRevenue / thisMonthOrderCount) : '₱0.00'}
                             </div>
                             <div style={{ fontSize: '0.85rem', opacity: 0.6, marginTop: '0.25rem' }}>Average Order Value</div>
                         </div>
@@ -318,7 +318,7 @@ const Reports = () => {
                             <div className="admin-card" style={{ borderLeft: '4px solid var(--primary)' }}>
                                 <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Revenue</div>
                                 <div style={{ fontSize: '1.75rem', fontWeight: 700, marginTop: '0.25rem' }}>
-                                    {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalRevenue)}
+                                    {new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(totalRevenue)}
                                 </div>
                             </div>
                             <div className="admin-card" style={{ borderLeft: `4px solid ${lowStockCount > 0 ? '#e63946' : '#2a9d8f'}` }}>
@@ -355,13 +355,13 @@ const Reports = () => {
                                 </div>
                                 <div style={{ textAlign: 'center', padding: '1.25rem', background: 'var(--bg-secondary)', borderRadius: '8px', borderTop: '3px solid var(--primary)' }}>
                                     <div style={{ fontSize: '1.75rem', fontWeight: 700 }}>
-                                        {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(salesReport.summary.total_revenue)}
+                                        {new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(salesReport.summary.total_revenue)}
                                     </div>
                                     <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>Total Revenue</div>
                                 </div>
                                 <div style={{ textAlign: 'center', padding: '1.25rem', background: 'var(--bg-secondary)', borderRadius: '8px', borderTop: '3px solid var(--accent)' }}>
                                     <div style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--accent)' }}>
-                                        {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(salesReport.summary.average_order_value)}
+                                        {new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(salesReport.summary.average_order_value)}
                                     </div>
                                     <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>Avg Order Value</div>
                                 </div>
@@ -388,7 +388,7 @@ const Reports = () => {
                                                 <td>{o.user?.name || o.contact || 'Guest'}</td>
                                                 <td>{new Date(o.created_at).toLocaleDateString()}</td>
                                                 <td><span className={`status-badge status-${o.status}`}>{o.status}</span></td>
-                                                <td style={{ fontWeight: 600 }}>{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(o.total_amount || 0)}</td>
+                                                <td style={{ fontWeight: 600 }}>{new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(o.total_amount || 0)}</td>
                                             </tr>
                                         ))}
                                     </tbody>
@@ -436,7 +436,7 @@ const Reports = () => {
                                                     </td>
                                                     <td style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
                                                         <img 
-                                                            src={item.product?.image_url || 'https://via.placeholder.com/40'} 
+                                                            src={item.product?.images && item.product.images.length > 0 ? (item.product.images[0].startsWith('http') ? item.product.images[0] : (item.product.images[0].startsWith('/storage') ? `${import.meta.env.VITE_BACKEND_URL || 'http://127.0.0.1:8000'}${item.product.images[0]}` : `${import.meta.env.VITE_BACKEND_URL || 'http://127.0.0.1:8000'}/storage/${item.product.images[0]}`)) : 'https://via.placeholder.com/40'} 
                                                             alt={item.product?.name} 
                                                             style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 6 }} 
                                                         />
@@ -444,7 +444,7 @@ const Reports = () => {
                                                     </td>
                                                     <td>{item.product?.category?.name || 'N/A'}</td>
                                                     <td style={{ fontWeight: 600 }}>{item.total_sold}</td>
-                                                    <td style={{ fontWeight: 600 }}>{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(item.total_revenue)}</td>
+                                                    <td style={{ fontWeight: 600 }}>{new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(item.total_revenue)}</td>
                                                 </tr>
                                             ))}
                                         </tbody>
@@ -475,7 +475,7 @@ const Reports = () => {
                                                 <tr key={p.id}>
                                                     <td style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
                                                         <img 
-                                                            src={p.image_url || 'https://via.placeholder.com/40'} 
+                                                            src={p.images && p.images.length > 0 ? (p.images[0].startsWith('http') ? p.images[0] : (p.images[0].startsWith('/storage') ? `${import.meta.env.VITE_BACKEND_URL || 'http://127.0.0.1:8000'}${p.images[0]}` : `${import.meta.env.VITE_BACKEND_URL || 'http://127.0.0.1:8000'}/storage/${p.images[0]}`)) : 'https://via.placeholder.com/40'} 
                                                             alt={p.name} 
                                                             style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 6 }} 
                                                         />
@@ -523,7 +523,7 @@ const Reports = () => {
                                                     <td>#{o.id}</td>
                                                     <td>{o.user?.name || o.contact || 'Guest'}</td>
                                                     <td>{new Date(o.created_at).toLocaleString()}</td>
-                                                    <td style={{ fontWeight: 600 }}>{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(o.total_amount || o.total || 0)}</td>
+                                                    <td style={{ fontWeight: 600 }}>{new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(o.total_amount || o.total || 0)}</td>
                                                     <td><span className={`status-badge status-${o.status}`}>{o.status}</span></td>
                                                 </tr>
                                             ))}

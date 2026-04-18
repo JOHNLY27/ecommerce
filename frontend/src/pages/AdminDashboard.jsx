@@ -223,7 +223,7 @@ const AdminDashboard = () => {
     if (loading || !user) return <div className="loading">Loading Dashboard...</div>;
 
     const formatCurrency = (amount) => {
-        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
+        return new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(amount);
     };
 
     // Filter and sort products
@@ -724,14 +724,14 @@ const AdminDashboard = () => {
                                             const d = new Date();
                                             d.setDate(d.getDate() - i);
                                             const dayStr = d.toISOString().split('T')[0];
-                                            const dayLabel = d.toLocaleDateString('en-US', { weekday: 'short' });
+                                            const dayLabel = d.toLocaleDateString('en-PH', { weekday: 'short' });
                                             const dayOrders = orders.filter(o => {
                                                 const oDate = new Date(o.created_at).toISOString().split('T')[0];
                                                 return oDate === dayStr;
                                             });
                                             const revenue = dayOrders.reduce((acc, o) => acc + (parseFloat(o.total_amount) || 0), 0);
                                             const count = dayOrders.length;
-                                            days.push({ dayLabel, revenue, count, date: d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) });
+                                            days.push({ dayLabel, revenue, count, date: d.toLocaleDateString('en-PH', { month: 'short', day: 'numeric' }) });
                                         }
                                         const maxRevenue = Math.max(...days.map(d => d.revenue), 1);
 
@@ -1502,7 +1502,7 @@ const AdminDashboard = () => {
                                         </div>
                                         <div className="form-group">
                                             <label className="form-label">Discount Value *</label>
-                                            <input type="number" step="0.01" min="0" className="form-control" placeholder={couponForm.type === 'percent' ? "e.g. 20 (for 20%)" : "e.g. 15 (for $15)"} value={couponForm.value} onChange={e => setCouponForm({ ...couponForm, value: e.target.value })} required />
+                                            <input type="number" step="0.01" min="0" className="form-control" placeholder={couponForm.type === 'percent' ? "e.g. 20 (for 20%)" : "e.g. 15 (for ₱15)"} value={couponForm.value} onChange={e => setCouponForm({ ...couponForm, value: e.target.value })} required />
                                         </div>
                                         <div className="form-group">
                                             <label className="form-label">Usage Limit</label>

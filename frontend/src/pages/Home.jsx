@@ -65,7 +65,7 @@ const Home = () => {
     }, []);
 
     const features = [
-        { icon: <Truck size={36} strokeWidth={1.5} />, title: 'Free Shipping', desc: 'On all orders over $100' },
+        { icon: <Truck size={36} strokeWidth={1.5} />, title: 'Free Shipping', desc: 'On all orders over ₱100' },
         { icon: <RefreshCw size={36} strokeWidth={1.5} />, title: '30-Day Returns', desc: 'Hassle-free exchange policy' },
         { icon: <ShieldCheck size={36} strokeWidth={1.5} />, title: 'Secure Checkout', desc: '100% encrypted payments' },
         { icon: <Award size={36} strokeWidth={1.5} />, title: 'Premium Quality', desc: 'Top-tier materials & design' },
@@ -265,7 +265,7 @@ const Home = () => {
                                                     <h3 className="product-title" style={{ fontSize: '1.2rem', marginBottom: '0.25rem' }}>{product.name}</h3>
                                                     <span className="product-category" style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>{product.category?.name}</span>
                                                 </div>
-                                                <div className="product-price" style={{ fontSize: '1.1rem', fontWeight: 700 }}>${Number(product.price).toFixed(2)}</div>
+                                                <div className="product-price" style={{ fontSize: '1.1rem', fontWeight: 700 }}>₱{Number(product.price).toFixed(2)}</div>
                                             </div>
                                             {product.reviews_count > 0 && (
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', marginTop: '0.75rem' }}>

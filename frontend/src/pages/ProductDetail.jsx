@@ -293,10 +293,10 @@ const ProductDetail = () => {
                             </button>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.75rem' }}>
-                            <p style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>${Number(effectivePrice).toFixed(2)}</p>
+                            <p style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>₱{Number(effectivePrice).toFixed(2)}</p>
                             {selectedVariant && selectedVariant.price && selectedVariant.price !== product.price && (
                                 <span style={{ fontSize: '1rem', color: '#999', textDecoration: 'line-through' }}>
-                                    ${Number(product.price).toFixed(2)}
+                                    ₱{Number(product.price).toFixed(2)}
                                 </span>
                             )}
                         </div>
@@ -496,7 +496,7 @@ const ProductDetail = () => {
                                     </div>
                                     <div style={{ marginTop: '1rem', textAlign: 'center' }}>
                                         <h3 style={{ fontSize: '1rem', marginBottom: '0.25rem', fontWeight: '600', color: 'var(--text)' }}>{rel.name}</h3>
-                                        <p style={{ fontWeight: 'bold', color: 'var(--text)' }}>${Number(rel.price).toFixed(2)}</p>
+                                        <p style={{ fontWeight: 'bold', color: 'var(--text)' }}>₱{Number(rel.price).toFixed(2)}</p>
                                     </div>
                                 </div>
                             );

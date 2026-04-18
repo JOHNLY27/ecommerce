@@ -101,7 +101,7 @@ const AdminReviews = () => {
     };
 
     const formatDate = (dateString) => {
-        return new Date(dateString).toLocaleDateString('en-US', {
+        return new Date(dateString).toLocaleDateString('en-PH', {
             year: 'numeric',
             month: 'short',
             day: 'numeric'
@@ -232,7 +232,7 @@ const AdminReviews = () => {
                                     <td>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                             <img
-                                                src={review.product?.image_url || 'https://via.placeholder.com/40'}
+                                                src={review.product?.images && review.product.images.length > 0 ? (review.product.images[0].startsWith('http') ? review.product.images[0] : (review.product.images[0].startsWith('/storage') ? `${import.meta.env.VITE_BACKEND_URL || 'http://127.0.0.1:8000'}${review.product.images[0]}` : `${import.meta.env.VITE_BACKEND_URL || 'http://127.0.0.1:8000'}/storage/${review.product.images[0]}`)) : 'https://via.placeholder.com/40'}
                                                 alt={review.product?.name}
                                                 style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 4 }}
                                             />
@@ -259,7 +259,7 @@ const AdminReviews = () => {
                                         {review.images && review.images.length > 0 && (
                                             <div style={{ display: 'flex', gap: '0.25rem', marginTop: '0.5rem' }}>
                                                 {review.images.slice(0, 3).map((img, idx) => (
-                                                    <img key={idx} src={img} alt="" style={{ width: 30, height: 30, objectFit: 'cover', borderRadius: 2 }} />
+                                                    <img key={idx} src={img.startsWith('http') ? img : (img.startsWith('/storage') ? `${import.meta.env.VITE_BACKEND_URL || 'http://127.0.0.1:8000'}${img}` : `${import.meta.env.VITE_BACKEND_URL || 'http://127.0.0.1:8000'}/storage/${img}`)} alt="" style={{ width: 30, height: 30, objectFit: 'cover', borderRadius: 2 }} />
                                                 ))}
                                                 {review.images.length > 3 && <span style={{ fontSize: '0.75rem', color: '#666' }}>+{review.images.length - 3}</span>}
                                             </div>

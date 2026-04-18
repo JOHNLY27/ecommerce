@@ -43,7 +43,7 @@ const WishlistPage = () => {
                                 </div>
                                 <div style={{ marginTop: '1rem', textAlign: 'center' }}>
                                     <h3 style={{ fontSize: '1.1rem', marginBottom: '0.25rem', fontWeight: '600' }}>{product.name}</h3>
-                                    <p style={{ fontWeight: 'bold' }}>${Number(product.price).toFixed(2)}</p>
+                                    <p style={{ fontWeight: 'bold' }}>₱{Number(product.price).toFixed(2)}</p>
                                 </div>
                             </div>
                         );

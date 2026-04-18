@@ -434,7 +434,7 @@ const OrderHistory = () => {
                                         </div>
                                         <div style={{ alignSelf: 'center', textAlign: 'right', flexShrink: 0 }}>
                                             <div style={{ fontWeight: 'bold', marginBottom: (order.status === 'completed' && order.received_at) ? '0.5rem' : '0', fontSize: '1rem' }}>
-                                                ${(item.price * item.quantity).toFixed(2)}
+                                                ₱{(item.price * item.quantity).toFixed(2)}
                                             </div>
                                             {order.status === 'completed' && order.received_at && (
                                                 <button 
@@ -470,12 +470,12 @@ const OrderHistory = () => {
                                     </p>
                                     {order.coupon_code && (
                                         <p style={{ margin: '0.5rem 0 0', fontSize: '0.85rem', color: '#10b981', fontWeight: 600 }}>
-                                            Coupon Applied: {order.coupon_code} (-${Number(order.discount_amount).toFixed(2)})
+                                            Coupon Applied: {order.coupon_code} (-₱{Number(order.discount_amount).toFixed(2)})
                                         </p>
                                     )}
                                 </div>
                                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.75rem' }}>
-                                    <h3 style={{ margin: 0, fontSize: '1.25rem' }}>Total: ${Number(order.total_amount).toFixed(2)}</h3>
+                                    <h3 style={{ margin: 0, fontSize: '1.25rem' }}>Total: ₱{Number(order.total_amount).toFixed(2)}</h3>
                                     
                                     {order.status === 'pending' && (
                                         <button
