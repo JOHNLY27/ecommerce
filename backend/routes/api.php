@@ -26,6 +26,9 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
 Route::post('/reset-password', [AuthController::class, 'resetPassword']);
+Route::get('/password/reset/{token}', function ($token) {
+    return redirect(env('FRONTEND_URL', 'http://localhost:5173') . '/reset-password?token=' . $token);
+})->name('password.reset');
 
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/categories/{id}', [CategoryController::class, 'show']);
