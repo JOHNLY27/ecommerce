@@ -51,7 +51,7 @@ const Login = () => {
                                 required
                             />
                         </div>
-                        <div className="form-group" style={{ marginBottom: '2rem' }}>
+                        <div className="form-group" style={{ marginBottom: '0.75rem' }}>
                             <label className="form-label" style={{ fontWeight: '600' }}>Password</label>
                             <input
                                 type="password"
@@ -61,6 +61,9 @@ const Login = () => {
                                 placeholder="••••••••"
                                 required
                             />
+                        </div>
+                        <div style={{ textAlign: 'right', marginBottom: '1.5rem' }}>
+                            <Link to="/forgot-password" style={{ fontSize: '0.85rem', fontWeight: '600', color: 'var(--primary)', textDecoration: 'none' }}>Forgot password?</Link>
                         </div>
                         <button type="submit" className="btn btn-primary" style={{ width: '100%', padding: '0.85rem', fontSize: '1rem', fontWeight: '600', borderRadius: '8px' }}>Sign In</button>
                     </form>
