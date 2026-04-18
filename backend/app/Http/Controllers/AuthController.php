@@ -149,19 +149,26 @@ class AuthController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $status = Password::sendResetLink(
-            $request->only('email')
-        );
+        try {
+            $user = User::where('email', $request->email)->first();
+            if (!$user) {
+                return response()->json(['message' => 'We couldn\'t find an account with that email address.'], 404);
+            }
 
-        if ($status === Password::RESET_LINK_SENT) {
+            // Using the custom method we added to the User model
+            $token = Password::createToken($user);
+            $user->sendPasswordResetNotification($token);
+
             return response()->json([
                 'message' => 'Password reset link has been sent to your email address.'
             ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Server Error: ' . $e->getMessage(),
+                'line' => $e->getLine(),
+                'file' => $e->getFile()
+            ], 500);
         }
-
-        return response()->json([
-            'message' => 'We couldn\'t find an account with that email address.'
-        ], 404);
     }
 
     /**
