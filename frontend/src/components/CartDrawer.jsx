@@ -116,7 +116,7 @@ const CartDrawer = () => {
                                             <span style={{ padding: '0 0.75rem', fontSize: '0.9rem', fontWeight: 600, width: '20px', textAlign: 'center' }}>{item.quantity}</span>
                                             <button onClick={() => updateCartItemQuantity(item.id, item.quantity + 1)} style={{ background: '#f9fafb', border: 'none', padding: '0.4rem 0.6rem', cursor: 'pointer', color: '#4b5563' }}><Plus size={14} /></button>
                                         </div>
-                                        <strong style={{ fontSize: '1.1rem', fontWeight: 700 }}>${(itemPrice * item.quantity).toFixed(2)}</strong>
+                                        <strong style={{ fontSize: '1.1rem', fontWeight: 700 }}>₱{(itemPrice * item.quantity).toFixed(2)}</strong>
                                     </div>
                                 </div>
                             </div>
@@ -129,7 +129,7 @@ const CartDrawer = () => {
                     <div style={{ padding: '1.5rem', borderTop: '1px solid rgba(0,0,0,0.05)', backgroundColor: 'var(--bg)' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', fontSize: '1.25rem', fontWeight: 800 }}>
                             <span>Subtotal</span>
-                            <span>${totalAmount.toFixed(2)}</span>
+                            <span>₱{totalAmount.toFixed(2)}</span>
                         </div>
                         <p style={{ margin: '0 0 1.25rem', fontSize: '0.85rem', color: '#6b7280' }}>Shipping and taxes calculated at checkout.</p>
                         <button 

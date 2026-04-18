@@ -228,7 +228,7 @@ const Cart = () => {
 
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', borderBottom: '1px solid var(--border)', paddingBottom: '1rem' }}>
                         <span>Subtotal</span>
-                        <span>${subtotal.toFixed(2)}</span>
+                        <span>₱{subtotal.toFixed(2)}</span>
                     </div>
 
                     <div style={{ marginBottom: '1.5rem', borderBottom: '1px solid var(--border)', paddingBottom: '1.5rem' }}>
@@ -252,7 +252,7 @@ const Cart = () => {
                         {couponError && <div style={{ color: 'var(--danger)', fontSize: '0.8rem', marginTop: '0.5rem' }}>{couponError}</div>}
                         {appliedCoupon && (
                             <div style={{ color: '#2ecc71', fontSize: '0.85rem', marginTop: '0.5rem', fontWeight: '500' }}>
-                                Coupon '{appliedCoupon.code}' applied! (-${discountAmount.toFixed(2)})
+                                Coupon '{appliedCoupon.code}' applied! (-₱{discountAmount.toFixed(2)})
                             </div>
                         )}
                         {availableCoupons.length > 0 && !appliedCoupon && (
@@ -275,7 +275,7 @@ const Cart = () => {
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                                 <span style={{ fontWeight: '700', color: 'var(--primary)', textTransform: 'uppercase', backgroundColor: 'var(--bg-secondary)', padding: '0.2rem 0.5rem', borderRadius: '4px', fontSize: '0.85rem', letterSpacing: '0.05em' }}>{c.code}</span>
                                                 <span style={{ fontSize: '0.85rem', color: '#555', fontWeight: '500' }}>
-                                                    {c.type === 'percent' ? `${c.value}% OFF` : `$${c.value} OFF`}
+                                                    {c.type === 'percent' ? `${c.value}% OFF` : `₱${c.value} OFF`}
                                                 </span>
                                             </div>
                                             <button className="btn btn-outline" style={{ padding: '0.25rem 0.75rem', fontSize: '0.75rem' }}>Use</button>
@@ -288,7 +288,7 @@ const Cart = () => {
 
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2rem', fontSize: '1.5rem', fontWeight: '600' }}>
                         <span>Total</span>
-                        <span>${total.toFixed(2)}</span>
+                        <span>₱{total.toFixed(2)}</span>
                     </div>
 
                     <div className="form-group">
@@ -324,7 +324,7 @@ const Cart = () => {
                                     required
                                 />
                                 <div style={{ fontSize: '0.85rem', color: '#666', marginTop: '0.75rem', lineHeight: 1.5 }}>
-                                    Please transfer the exact total amount (<strong>${total.toFixed(2)}</strong>) to the number above and enter your reference number to verify your order.
+                                    Please transfer the exact total amount (<strong>₱{total.toFixed(2)}</strong>) to the number above and enter your reference number to verify your order.
                                 </div>
                             </div>
                         </div>

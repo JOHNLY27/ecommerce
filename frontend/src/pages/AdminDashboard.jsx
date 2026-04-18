@@ -743,7 +743,7 @@ const AdminDashboard = () => {
                                                         <div key={idx} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%', justifyContent: 'flex-end' }}>
                                                             {/* Revenue label on top */}
                                                             <div style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--text)', marginBottom: '4px' }}>
-                                                                {day.revenue > 0 ? `$${day.revenue.toFixed(0)}` : ''}
+                                                                {day.revenue > 0 ? `₱${day.revenue.toFixed(0)}` : ''}
                                                             </div>
                                                             {/* Bar */}
                                                             <div
@@ -1007,7 +1007,7 @@ const AdminDashboard = () => {
                                                 </select>
                                             </div>
                                             <div className="form-group">
-                                                <label className="form-label">Price ($)</label>
+                                                <label className="form-label">Price (₱)</label>
                                                 <input type="number" step="0.01" className="form-control" value={productForm.price} onChange={e => setProductForm({ ...productForm, price: e.target.value })} required />
                                             </div>
                                             <div className="form-group">
@@ -1497,7 +1497,7 @@ const AdminDashboard = () => {
                                             <label className="form-label">Discount Type *</label>
                                             <select className="form-control" value={couponForm.type} onChange={e => setCouponForm({ ...couponForm, type: e.target.value })} required>
                                                 <option value="percent">Percentage (%)</option>
-                                                <option value="fixed">Fixed Amount ($)</option>
+                                                <option value="fixed">Fixed Amount (₱)</option>
                                             </select>
                                         </div>
                                         <div className="form-group">
@@ -1544,7 +1544,7 @@ const AdminDashboard = () => {
                                                     <tr key={c.id}>
                                                         <td><code style={{ fontSize: '1.1rem', background: '#f4f4f4', padding: '0.25rem 0.5rem', borderRadius: '4px' }}>{c.code}</code></td>
                                                         <td style={{ fontWeight: 'bold', color: 'var(--primary)' }}>
-                                                            {c.type === 'percent' ? `${c.value}% OFF` : `$${c.value} OFF`}
+                                                            {c.type === 'percent' ? `${c.value}% OFF` : `₱${c.value} OFF`}
                                                         </td>
                                                         <td>{c.used_count} / {c.usage_limit ? c.usage_limit : '∞'}</td>
                                                         <td>
