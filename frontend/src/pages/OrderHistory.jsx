@@ -126,7 +126,7 @@ const ReviewModal = ({ isOpen, onClose, products, orderId, onReviewSubmitted }) 
 
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem', padding: '1rem', background: '#f9f9f9', borderRadius: '8px' }}>
                     <img 
-                        src={currentProduct.image_url || (currentProduct.image ? `/storage/${currentProduct.image}` : '/placeholder.jpg')} 
+                        src={currentProduct.images && currentProduct.images.length > 0 ? (currentProduct.images[0].startsWith('http') ? currentProduct.images[0] : (currentProduct.images[0].startsWith('/storage') ? `${import.meta.env.VITE_BACKEND_URL || 'http://127.0.0.1:8000'}${currentProduct.images[0]}` : `${import.meta.env.VITE_BACKEND_URL || 'http://127.0.0.1:8000'}/storage/${currentProduct.images[0]}`)) : (currentProduct.image_url || '/placeholder.jpg')} 
                         alt={currentProduct.name}
                         style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '8px' }}
                     />
