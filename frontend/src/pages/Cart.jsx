@@ -21,6 +21,7 @@ const Cart = () => {
     const [validatingCoupon, setValidatingCoupon] = useState(false);
     const [couponError, setCouponError] = useState('');
     const [availableCoupons, setAvailableCoupons] = useState([]);
+    const [isProcessing, setIsProcessing] = useState(false);
 
     useEffect(() => {
         if (user) {
@@ -87,7 +88,11 @@ const Cart = () => {
             alert("Please provide a valid GCash Reference Number.");
             return;
         }
+        
+        setIsProcessing(true);
         const success = await checkout(paymentMethod, address, contact, city, selectedItemIds, appliedCoupon?.code, referenceNumber);
+        setIsProcessing(false);
+        
         if (success) {
             alert("Order placed successfully!");
             navigate('/orders');
@@ -372,8 +377,8 @@ const Cart = () => {
                         <Link to="/profile" style={{ fontSize: '0.85rem', color: 'var(--primary)', fontWeight: '600' }}>✏️ Edit Address in Profile</Link>
                     </div>
 
-                    <button className="btn btn-primary" style={{ width: '100%', padding: '1.25rem' }} onClick={handleCheckout}>
-                        Proceed to Checkout
+                    <button className="btn btn-primary" style={{ width: '100%', padding: '1.25rem', opacity: isProcessing ? 0.7 : 1, cursor: isProcessing ? 'not-allowed' : 'pointer' }} onClick={handleCheckout} disabled={isProcessing}>
+                        {isProcessing ? 'Processing Order...' : 'Proceed to Checkout'}
                     </button>
                 </div>
             </div>

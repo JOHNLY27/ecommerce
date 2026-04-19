@@ -145,7 +145,7 @@ class OrderController extends Controller
 
             // Send order confirmation email to the customer
             try {
-                Mail::to($user->email)->send(new OrderConfirmationMail($order));
+                Mail::to($user->email)->queue(new OrderConfirmationMail($order));
             } catch (\Throwable $e) {
                 \Illuminate\Support\Facades\Log::error('Order Confirmation Email Failed: ' . $e->getMessage());
             }
