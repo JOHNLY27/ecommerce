@@ -13,6 +13,7 @@ const Cart = () => {
     const [address, setAddress] = useState('');
     const [contact, setContact] = useState('');
     const [city, setCity] = useState('');
+    const [customerNote, setCustomerNote] = useState('');
     const [selectedItemIds, setSelectedItemIds] = useState([]);
     const [initialized, setInitialized] = useState(false);
 
@@ -90,7 +91,7 @@ const Cart = () => {
         }
         
         setIsProcessing(true);
-        const success = await checkout(paymentMethod, address, contact, city, selectedItemIds, appliedCoupon?.code, referenceNumber);
+        const success = await checkout(paymentMethod, address, contact, city, selectedItemIds, appliedCoupon?.code, referenceNumber, customerNote);
         setIsProcessing(false);
         
         if (success) {
@@ -373,6 +374,17 @@ const Cart = () => {
                         />
                     </div>
                     
+                    <div className="form-group" style={{ marginTop: '1rem', marginBottom: '1.5rem' }}>
+                        <label className="form-label">Order Notes (Optional)</label>
+                        <textarea
+                            className="form-control"
+                            rows="2"
+                            value={customerNote}
+                            onChange={(e) => setCustomerNote(e.target.value)}
+                            placeholder="Notes about your order, e.g. special notes for delivery."
+                        ></textarea>
+                    </div>
+
                     <div style={{ textAlign: 'right', marginBottom: '2rem' }}>
                         <Link to="/profile" style={{ fontSize: '0.85rem', color: 'var(--primary)', fontWeight: '600' }}>✏️ Edit Address in Profile</Link>
                     </div>

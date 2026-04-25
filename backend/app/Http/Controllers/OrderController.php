@@ -31,7 +31,8 @@ class OrderController extends Controller
             'city' => 'required|string',
             'selected_item_ids' => 'required|array|min:1',
             'selected_item_ids.*' => 'integer|exists:cart_items,id,user_id,'.$user->id,
-            'coupon_code' => 'nullable|string'
+            'coupon_code' => 'nullable|string',
+            'customer_note' => 'nullable|string|max:1000'
         ]);
 
         $coupon = null;
@@ -95,7 +96,8 @@ class OrderController extends Controller
                 'contact' => $request->contact,
                 'city' => $request->city,
                 'coupon_code' => $coupon ? $coupon->code : null,
-                'discount_amount' => $discountAmount
+                'discount_amount' => $discountAmount,
+                'customer_note' => $request->customer_note
             ]);
 
             if ($coupon) {

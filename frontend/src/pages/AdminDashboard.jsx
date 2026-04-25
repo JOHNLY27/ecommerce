@@ -905,6 +905,11 @@ const AdminDashboard = () => {
                                                         <div className="text-sm" style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>
                                                             {order.address}
                                                         </div>
+                                                        {order.customer_note && (
+                                                            <div className="text-sm" style={{ color: '#005CEE', fontSize: '0.75rem', marginTop: '0.5rem', background: '#f0f4f8', padding: '0.5rem', borderRadius: '4px', borderLeft: '3px solid #005CEE' }}>
+                                                                <strong>Note:</strong> {order.customer_note}
+                                                            </div>
+                                                        )}
                                                     </td>
                                                     <td>
                                                         {order.items && order.items.map((item, idx) => (

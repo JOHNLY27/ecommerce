@@ -68,9 +68,9 @@ export const CartProvider = ({ children }) => {
         }
     };
 
-    const checkout = async (paymentMethod, address, contact, city, selectedItemIds, couponCode = null, referenceNumber = null) => {
+    const checkout = async (paymentMethod, address, contact, city, selectedItemIds, couponCode = null, referenceNumber = null, customerNote = null) => {
         try {
-            await axios.post('/orders', { payment_method: paymentMethod, address, contact, city, selected_item_ids: selectedItemIds, coupon_code: couponCode, reference_number: referenceNumber });
+            await axios.post('/orders', { payment_method: paymentMethod, address, contact, city, selected_item_ids: selectedItemIds, coupon_code: couponCode, reference_number: referenceNumber, customer_note: customerNote });
             fetchCart();
             return true;
         } catch (err) {

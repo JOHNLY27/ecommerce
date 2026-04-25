@@ -473,6 +473,13 @@ const OrderHistory = () => {
                                             Coupon Applied: {order.coupon_code} (-₱{Number(order.discount_amount).toFixed(2)})
                                         </p>
                                     )}
+                                    {order.customer_note && (
+                                        <div style={{ marginTop: '0.75rem', padding: '0.5rem', background: '#f8fafc', borderRadius: '6px', borderLeft: '3px solid #6366f1' }}>
+                                            <p style={{ margin: 0, fontSize: '0.85rem', color: '#475569' }}>
+                                                <strong>Your Note:</strong> {order.customer_note}
+                                            </p>
+                                        </div>
+                                    )}
                                 </div>
                                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.75rem' }}>
                                     <h3 style={{ margin: 0, fontSize: '1.25rem' }}>Total: ₱{Number(order.total_amount).toFixed(2)}</h3>
