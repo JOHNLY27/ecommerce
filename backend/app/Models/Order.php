@@ -9,7 +9,7 @@ class Order extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'total_amount', 'status', 'payment_method', 'address', 'contact', 'city', 'received_at', 'customer_note'];
+    protected $fillable = ['user_id', 'total_amount', 'status', 'payment_method', 'address', 'contact', 'city', 'received_at', 'customer_note', 'reference_number'];
 
     protected $casts = [
         'received_at' => 'datetime',

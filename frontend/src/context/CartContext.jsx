@@ -75,6 +75,11 @@ export const CartProvider = ({ children }) => {
             return true;
         } catch (err) {
             console.error(err);
+            if (err.response?.data?.message) {
+                alert(err.response.data.message);
+            } else {
+                alert("Checkout failed. Please try again or check your connection.");
+            }
             return false;
         }
     };

@@ -265,6 +265,7 @@ erDiagram
         string city
         string coupon_code
         decimal discount_amount
+        text customer_note
         timestamp received_at
         timestamps created_at
     }
@@ -372,6 +373,7 @@ stateDiagram-v2
 | 28 | `add_coupon_to_orders_table` | Coupon code/discount on orders |
 | 29 | `add_subcategory_to_products_table` | Subcategory field |
 | 30 | `add_phone_and_address_to_users_table` | Phone & address on users |
+| 31 | `add_customer_note_to_orders_table` | Customer note on orders |
 
 ---
 
@@ -476,7 +478,7 @@ stateDiagram-v2
 | Method | Endpoint | Description |
 |---|---|---|
 | `GET` | `/orders` | List user's orders |
-| `POST` | `/orders` | Place a new order (`payment_method`, `address`, `contact`, `city`, `selected_item_ids[]`, `coupon_code`) |
+| `POST` | `/orders` | Place a new order (`payment_method`, `address`, `contact`, `city`, `selected_item_ids[]`, `coupon_code`, `customer_note`) |
 | `GET` | `/orders/{id}` | Get order details |
 | `POST` | `/orders/{id}/cancel` | Cancel a pending order (restocks items) |
 | `POST` | `/orders/{id}/refund` | Request refund on completed/delivered order |
@@ -609,8 +611,8 @@ graph TD
 | [Home.jsx](file:///c:/Users/Public/Primewear/frontend/src/pages/Home.jsx) | `/` | 29 KB | Landing page with hero, featured products, new arrivals, trending |
 | [Shop.jsx](file:///c:/Users/Public/Primewear/frontend/src/pages/Shop.jsx) | `/shop` | 29 KB | Product catalog with filters, search, category/sort options |
 | [ProductDetail.jsx](file:///c:/Users/Public/Primewear/frontend/src/pages/ProductDetail.jsx) | `/product/:id` | 31 KB | Full product page with gallery, variant selection, reviews |
-| [Cart.jsx](file:///c:/Users/Public/Primewear/frontend/src/pages/Cart.jsx) | `/cart` | 23 KB | Full cart page with checkout flow, coupon application |
-| [OrderHistory.jsx](file:///c:/Users/Public/Primewear/frontend/src/pages/OrderHistory.jsx) | `/orders` | 32 KB | Order list with status tracking, cancel/refund/received actions |
+| [Cart.jsx](file:///c:/Users/Public/Primewear/frontend/src/pages/Cart.jsx) | `/cart` | 23 KB | Full cart page with checkout flow, order notes, coupon application |
+| [OrderHistory.jsx](file:///c:/Users/Public/Primewear/frontend/src/pages/OrderHistory.jsx) | `/orders` | 32 KB | Order list with status tracking, customer notes, cancel/refund/received actions |
 | [WishlistPage.jsx](file:///c:/Users/Public/Primewear/frontend/src/pages/WishlistPage.jsx) | `/wishlist` | 4 KB | Saved products grid |
 | [Login.jsx](file:///c:/Users/Public/Primewear/frontend/src/pages/Login.jsx) | `/login` | 4 KB | Login form |
 | [Register.jsx](file:///c:/Users/Public/Primewear/frontend/src/pages/Register.jsx) | `/register` | 6 KB | Registration form with phone/address fields |
@@ -715,7 +717,7 @@ The admin panel is a comprehensive management dashboard accessible at `/admin` f
 | Tab | Capabilities |
 |---|---|
 | **Dashboard** | Revenue, order count, product count, user count overview cards |
-| **Orders** | View all orders, filter by status, update status (triggers customer notification), view order details & items |
+| **Orders** | View all orders, filter by status, update status (triggers customer notification), view order details, customer notes & items |
 | **Products** | Full CRUD with image upload, category assignment, size/color configuration, sale/trending/new-arrival flags |
 | **Variants** | Per-product SKU management, bulk create from size×color matrix, individual stock & price control |
 | **Customers** | Customer directory with order count and total spend |

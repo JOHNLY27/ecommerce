@@ -345,8 +345,6 @@ const Cart = () => {
                             rows="2"
                             value={address}
                             onChange={(e) => setAddress(e.target.value)}
-                            disabled
-                            style={{ backgroundColor: 'var(--bg-secondary)', cursor: 'not-allowed', color: '#555' }}
                         ></textarea>
                     </div>
 
@@ -357,8 +355,6 @@ const Cart = () => {
                             className="form-control"
                             value={contact}
                             onChange={(e) => setContact(e.target.value)}
-                            disabled
-                            style={{ backgroundColor: 'var(--bg-secondary)', cursor: 'not-allowed', color: '#555' }}
                         />
                     </div>
 
@@ -369,8 +365,6 @@ const Cart = () => {
                             className="form-control"
                             value={city}
                             onChange={(e) => setCity(e.target.value)}
-                            disabled
-                            style={{ backgroundColor: 'var(--bg-secondary)', cursor: 'not-allowed', color: '#555' }}
                         />
                     </div>
                     

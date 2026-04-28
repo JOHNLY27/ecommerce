@@ -32,6 +32,7 @@ class OrderController extends Controller
             'selected_item_ids' => 'required|array|min:1',
             'selected_item_ids.*' => 'integer|exists:cart_items,id,user_id,'.$user->id,
             'coupon_code' => 'nullable|string',
+            'reference_number' => 'nullable|string',
             'customer_note' => 'nullable|string|max:1000'
         ]);
 
@@ -97,7 +98,8 @@ class OrderController extends Controller
                 'city' => $request->city,
                 'coupon_code' => $coupon ? $coupon->code : null,
                 'discount_amount' => $discountAmount,
-                'customer_note' => $request->customer_note
+                'customer_note' => $request->customer_note,
+                'reference_number' => $request->reference_number
             ]);
 
             if ($coupon) {
